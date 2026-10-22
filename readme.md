@@ -5,7 +5,6 @@
 1) рассчитать площадь;
 2) вывести определение фигуры;
 3) нарисовать фигуру.
-(https://drive.google.com/file/d/16nzrf0BHD9wZWADOe2NGF4yxLYh-FOHH/view)
 
 ## 1. Алгоритм и блок-схема
 
