@@ -3,46 +3,40 @@
 #include <locale.h>
 #include <math.h>
 
-int task1();
-int task2();
-int task3();
-
 double fa(double x);
 double fb(double x);
 double cosn(double x, int N);
 double coseps(double x, double eps);
 float ploshad(float a, float b);
-int opred();
-int risunok(int a, int b, char c);
+int opred(int a, int b);
+char risunok(int row, int col, int a, int b, char c);
 
 int main()
 {
-    setlocale(LC_ALL, ".UTF8");
-    task1();
-    task2();
-    task3();
-    return 0;
-}
+    double x1, y1, y2;
+    int punkt1;
+    double x2, eps, ystd, yn, yeps;
+    int N, i;
+    int a, b, punkt3, row, col, isravn;
+    float s;
+    char c, ch;
 
-int task1()
-{
-    double x, y1, y2;
-    int punkt;
+    setlocale(LC_ALL, ".UTF8");
 
     printf("Задание 1:\n");
     printf("Введите x: ");
-    scanf("%lf", &x);
+    scanf("%lf", &x1);
 
-    y1 = fa(x);
-    y2 = fb(x);
+    y1 = fa(x1);
+    y2 = fb(x1);
     printf("fa(x)=%.4lf , fb(x)=%.4lf\n", y1, y2);
 
     do
     {
         printf("\nМеню (1 - произведение, 2 - разность квадратов, 3 - удвоенная сумма, 0 - выход): ");
-        scanf("%d", &punkt);
+        scanf("%d", &punkt1);
 
-        switch (punkt)
+        switch (punkt1)
         {
             case 1:
                 printf("произведение: %.4lf\n", y1 * y2);
@@ -60,47 +54,39 @@ int task1()
                 printf("Ошибка: неверный пункт меню\n");
                 break;
         }
-    } while (punkt != 0);
-    return 0;
-}
-
-int task2()
-{
-    double x, eps, ystd, yn, yeps;
-    int N, i;
+    } while (punkt1 != 0);
 
     printf("\nЗадание 2 (Вариант 3 - cos(x)):\n");
     printf("Введите x: ");
-    scanf("%lf", &x);
+    scanf("%lf", &x2);
     printf("Введите количество членов ряда N (N >= 1): ");
     scanf("%d", &N);
-    printf("Введите точность eps (например, 0,0001): ");
+    printf("Введите точность eps (eps > 0, например, 0,0001): ");
     scanf("%lf", &eps);
 
-    ystd = cos(x);
-    yn = cosn(x, N);
-    yeps = coseps(x, eps);
-
-    printf("1) Стандартная функция cos(x) = %.6lf\n", ystd);
-    printf("2) Сумма ряда cosn(x, %d)     = %.6lf\n", N, yn);
-    printf("3) С точностью coseps(x, eps) = %.6lf\n", yeps);
-
-    printf("\nТаблица сходимости:\n");
-    printf("  N |   cos_N   | отклонение\n");
-    printf("-----------------------------\n");
-    for (i = 1; i <= N; i++)
+    if (N < 1 || eps <= 0.0)
     {
-        yn = cosn(x, i);
-        printf("%3d | %9.4lf | %+.4e\n", i, yn, ystd - yn);
+        printf("Ошибка: должно выполняться N >= 1 и eps > 0\n");
     }
-    return 0;
-}
+    else
+    {
+        ystd = cos(x2);
+        yn = cosn(x2, N);
+        yeps = coseps(x2, eps);
 
-int task3()
-{
-    int a, b, punkt;
-    float s;
-    char c;
+        printf("1) Стандартная функция cos(x) = %.6lf\n", ystd);
+        printf("2) Сумма ряда cosn(x, %d)     = %.6lf\n", N, yn);
+        printf("3) С точностью coseps(x, eps) = %.6lf\n", yeps);
+
+        printf("\nТаблица сходимости:\n");
+        printf("  N |   cos_N   | отклонение\n");
+        printf("-----------------------------\n");
+        for (i = 1; i <= N; i++)
+        {
+            yn = cosn(x2, i);
+            printf("%3d | %9.4lf | %+.4e\n", i, yn, ystd - yn);
+        }
+    }
 
     printf("\nЗадание 3 (ДЗ - Прямоугольный треугольник):\n");
     printf("Введите катет a (высоту): ");
@@ -122,21 +108,31 @@ int task3()
         printf("3 - нарисовать фигуру\n");
         printf("0 - выход из программы\n");
         printf("Выберите операцию: ");
-        scanf("%d", &punkt);
+        scanf("%d", &punkt3);
 
-        switch (punkt)
+        switch (punkt3)
         {
             case 1:
                 s = ploshad((float)a, (float)b);
                 printf("Площадь прямоугольного треугольника: %.2f\n", s);
                 break;
             case 2:
-                opred();
+                isravn = opred(a, b);
+                printf("Прямоугольный треугольник - это треугольник, у которого один из углов прямой (90 градусов).\n");
+                printf("Вид по сторонам: %s\n", (isravn == 1) ? "равнобедренный (a = b)" : "разносторонний (a != b)");
                 break;
             case 3:
                 printf("Введите символ для рисования: ");
                 scanf(" %c", &c);
-                risunok(a, b, c);
+                for (row = 1; row <= a; row++)
+                {
+                    for (col = 1; col <= b; col++)
+                    {
+                        ch = risunok(row, col, a, b, c);
+                        putchar(ch);
+                    }
+                    putchar('\n');
+                }
                 break;
             case 0:
                 printf("Завершение работы.\n");
@@ -145,7 +141,7 @@ int task3()
                 printf("Ошибка: неверный пункт меню\n");
                 break;
         }
-    } while (punkt != 0);
+    } while (punkt3 != 0);
     return 0;
 }
 
@@ -212,24 +208,29 @@ float ploshad(float a, float b)
     return s;
 }
 
-int opred()
+int opred(int a, int b)
 {
-    printf("Прямоугольный треугольник - это треугольник, у которого один из углов прямой (равен 90 градусам).\n");
-    return 0;
+    if (a == b)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
-int risunok(int a, int b, char c)
+char risunok(int row, int col, int a, int b, char c)
 {
-    int row, col, len;
+    int len;
 
-    for (row = 1; row <= a; row++)
+    len = (row * b + a - 1) / a;
+    if (col <= len)
     {
-        len = (row * b + a - 1) / a;
-        for (col = 1; col <= len; col++)
-        {
-            putchar(c);
-        }
-        putchar('\n');
+        return c;
     }
-    return 0;
+    else
+    {
+        return ' ';
+    }
 }
